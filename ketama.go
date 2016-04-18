@@ -88,7 +88,7 @@ func NewRing(nodes []*Node) *Ring {
 }
 
 // Get node by key from ring.
-// Returns nil if the ring is empty/
+// Returns nil if the ring is empty.
 func (r *Ring) Get(key string) *Node {
 	if len(r.nodes) == 0 {
 		return nil
