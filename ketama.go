@@ -1,6 +1,6 @@
 // Copyright 2016 Chao Wang <hit9@icloud.com>
 
-// Package ketama implements a consistent hashing ring.
+// Package ketama implements a consistent hashing ring (on md5).
 package ketama
 
 import (
@@ -50,8 +50,7 @@ type Ring struct {
 }
 
 // alignHash returns hash value with aligment.
-func alignHash(key string, align int) uint32 {
-	b := md5.Sum([]byte(key))
+func alignHash(b [md5.Size]byte, align int) uint32 {
 	return ((uint32(b[3+align*4]&0xff) << 24) |
 		(uint32(b[2+align*4]&0xff) << 16) |
 		(uint32(b[1+align*4]&0xff) << 8) |
@@ -73,12 +72,13 @@ func NewRing(nodes []*Node) *Ring {
 		node := nodes[i]
 		for j := 0; j < int(node.weight)*40; j++ {
 			key := fmt.Sprintf("%s-%d", node.key, j)
+			b := md5.Sum([]byte(key))
 			for n := 0; n < 4; n++ {
 				r.nodes[k] = &Node{}
 				r.nodes[k].key = node.key
 				r.nodes[k].weight = node.weight
 				r.nodes[k].data = node.data
-				r.nodes[k].hash = alignHash(key, n)
+				r.nodes[k].hash = alignHash(b, n)
 				k++
 			}
 		}
@@ -98,7 +98,8 @@ func (r *Ring) Get(key string) *Node {
 	}
 	left := 0
 	right := len(r.nodes)
-	hash := alignHash(key, 0)
+	b := md5.Sum([]byte(key))
+	hash := alignHash(b, 0)
 	for {
 		mid := (left + right) / 2
 		if mid == len(r.nodes) {

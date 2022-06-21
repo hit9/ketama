@@ -1,7 +1,7 @@
 Ketama
 ======
 
-Package ketama implements a consistent hashing ring.
+Package ketama implements a consistent hashing ring (on md5).
 
 https://godoc.org/github.com/hit9/ketama
 
