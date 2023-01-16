@@ -3,7 +3,7 @@ Ketama
 
 Package ketama implements a consistent hashing ring (on md5).
 
-https://godoc.org/github.com/hit9/ketama
+https://pkg.go.dev/github.com/hit9/ketama
 
 Example
 -------
